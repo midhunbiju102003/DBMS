@@ -1,0 +1,166 @@
+mysql> create table order_details(order_id int,product_name varchar(50),order_no int,order_date date);
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(1,"Laptop",234,'2000-03-02');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(2,"Desktop",456,'2001-02-02');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(3,"Keyboard",457,'2000-03-02');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(4,"Mouse",500,'2001-03-02');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(5,"Antivirus",501,'2002-03-02');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        3 | Keyboard     |      457 | 2000-03-02 |
+|        4 | Mouse        |      500 | 2001-03-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
++----------+--------------+----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(6,"Printer",502,'2003-03-02');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(7,"Monitor",503,'2004-03-02');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        3 | Keyboard     |      457 | 2000-03-02 |
+|        4 | Mouse        |      500 | 2001-03-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
+|        6 | Printer      |      502 | 2003-03-02 |
+|        7 | Monitor      |      503 | 2004-03-02 |
++----------+--------------+----------+------------+
+7 rows in set (0.00 sec)
+
+mysql> rollback;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        3 | Keyboard     |      457 | 2000-03-02 |
+|        4 | Mouse        |      500 | 2001-03-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
++----------+--------------+----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> start transaction;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from order_details where order_id = 3;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> delete from order_details where order_id = 4;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
++----------+--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
++----------+--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> set autocommit = 0;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> savepoint svp_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> update order_details set product_name = "Mechanical Keyborad" where order_no = 457;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(8,"Scanner",504,'2005-03-02');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into order_details(order_id,product_name,order_no,order_date)values(9,"Speaker",505,'2006-03-02');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> savepoint delt;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> delete from order_details where product_name = "Desktop";
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
+|        8 | Scanner      |      504 | 2005-03-02 |
+|        9 | Speaker      |      505 | 2006-03-02 |
++----------+--------------+----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> rollback to delt;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
+|        8 | Scanner      |      504 | 2005-03-02 |
+|        9 | Speaker      |      505 | 2006-03-02 |
++----------+--------------+----------+------------+
+5 rows in set (0.00 sec)
+
+mysql> rollback to svp_update;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select*from order_details;
++----------+--------------+----------+------------+
+| order_id | product_name | order_no | order_date |
++----------+--------------+----------+------------+
+|        1 | Laptop       |      234 | 2000-03-02 |
+|        2 | Desktop      |      456 | 2001-02-02 |
+|        5 | Antivirus    |      501 | 2002-03-02 |
++----------+--------------+----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> set autocommit = 1;
+Query OK, 0 rows affected (0.00 sec)

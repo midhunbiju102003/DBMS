@@ -1,0 +1,210 @@
+PROGRAM 1:
+
+mysql> DELIMITER //
+mysql> 
+mysql> CREATE PROCEDURE FindGreates(IN num1 INT, IN num2 INT, IN num3 INT, OUT greatest INT)
+    -> BEGIN
+    ->     IF num1 >= num2 AND num1 >= num3 THEN
+    ->         SET greatest = num1;
+    ->     ELSEIF num2 >= num1 AND num2 >= num3 THEN
+    ->         SET greatest = num2;
+    ->     ELSE
+    ->         SET greatest = num3;
+    ->     END IF;
+    ->     SELECT greatest;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> call FindGreates(50,40,60,@result);
++----------+
+| greatest |
++----------+
+|       60 |
++----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+
+PROGRAM 2:
+
+mysql> DELIMITER //
+mysql> 
+mysql> CREATE PROCEDURE fact(IN x INT)
+    -> BEGIN
+    ->     DECLARE result INT DEFAULT 1;
+    ->     DECLARE i INT DEFAULT 1;
+    -> 
+    ->     
+    ->     IF x < 0 THEN
+    ->         SET result = NULL;
+    ->     ELSE
+    ->         
+    ->         WHILE i <= x DO
+    ->             SET result = result * i;
+    ->             SET i = i + 1;
+    ->         END WHILE;
+    ->     END IF;
+    -> 
+    ->     
+    ->     SELECT x AS Number, result AS Factorial;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> CALL fact(5);
++--------+-----------+
+| Number | Factorial |
++--------+-----------+
+|      5 |       120 |
++--------+-----------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+PROGRAM 3:
+
+mysql> DELIMITER //
+mysql> 
+mysql> CREATE PROCEDURE FindGrade(IN mark INT)
+    -> BEGIN
+    ->     DECLARE grade CHAR(1);
+    -> 
+    ->     IF mark >= 90 THEN
+    ->         SET grade = 'A';
+    ->     ELSEIF mark >= 80 THEN
+    ->         SET grade = 'B';
+    ->     ELSEIF mark >= 70 THEN
+    ->         SET grade = 'C';
+    ->     ELSEIF mark >= 60 THEN
+    ->         SET grade = 'D';
+    ->     ELSE
+    ->         SET grade = 'F';
+    ->     END IF;
+    -> 
+    ->     SELECT mark AS Mark, grade AS Grade;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> DELIMITER ;
+mysql> CALL FindGrade(55);
++------+-------+
+| Mark | Grade |
++------+-------+
+|   55 | F     |
++------+-------+
+1 row in set (0.00 sec)
+
+PROGRAM 4:
+
+mysql> DELIMITER //
+mysql> 
+mysql> CREATE PROCEDURE ReverseNumber(IN num INT)
+    -> BEGIN
+    ->     DECLARE remainder INT;
+    ->     DECLARE reversedNum INT DEFAULT 0;
+    -> 
+    ->     WHILE num > 0 DO
+    ->         SET remainder = num % 10;
+    ->         SET reversedNum = reversedNum * 10 + remainder;
+    ->         SET num = num DIV 10;
+    ->     END WHILE;
+    -> 
+    ->     
+    ->     SELECT reversedNum AS ReversedNumber;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> DELIMITER ;
+mysql> CALL ReverseNumber(1234);
++----------------+
+| ReversedNumber |
++----------------+
+|           4321 |
++----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.00 sec)
+
+PROGRAM 5:
+
+mysql> DELIMITER //
+mysql> 
+mysql> CREATE PROCEDURE SumSeries(IN num INT)
+    -> BEGIN
+    ->     DECLARE sum_result INT DEFAULT 0;
+    ->     DECLARE i INT DEFAULT 1;
+    -> 
+    ->     
+    ->     WHILE i <= num DO
+    ->         SET sum_result = sum_result + i;
+    ->         SET i = i + 1;
+    ->     END WHILE;
+    -> 
+    ->     
+    ->     SELECT num AS Number, sum_result AS `Sum of Series`;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> DELIMITER ;
+mysql> call SumSeries(10);
++--------+---------------+
+| Number | Sum of Series |
++--------+---------------+
+|     10 |            55 |
++--------+---------------+
+1 row in set (0.00 sec)
+
+PROGRAM 6:
+
+mysql> CREATE TABLE account (
+    ->     account_id INT PRIMARY KEY,
+    ->     balance DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> INSERT INTO account (account_id, balance) VALUES
+    -> (100, 10000),
+    -> (101, 4000),
+    -> (102, 15000),
+    -> (103, 1000);
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> DELIMITER //
+mysql> 
+mysql> CREATE PROCEDURE withdraw_amount1(IN id INT, IN amount DECIMAL(10,2))
+    -> BEGIN
+    ->     DECLARE current_balance DECIMAL(10,2);
+    -> 
+    ->     SELECT balance INTO current_balance FROM account WHERE account_id = id;
+    -> 
+    ->     IF current_balance IS NULL THEN
+    ->         SELECT 'Account does not exist' AS message;
+    ->     ELSE
+    ->         IF (current_balance - amount) >= 1000 THEN
+    ->             UPDATE account SET balance = balance - amount WHERE account_id = id;
+    ->             SELECT CONCAT('Withdrawal successful. New Balance: ', balance) AS message FROM account WHERE account_id = id;
+    ->         ELSE
+    ->             SELECT 'Insufficient balance. Minimum balance should be at least 1000.' AS message;
+    ->         END IF;
+    ->     END IF;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> 
+mysql> DELIMITER ;
+mysql> CALL withdraw_amount1(101, 500);
++---------------------------------------------+
+| message                                     |
++---------------------------------------------+
+| Withdrawal successful. New Balance: 3500.00 |
++---------------------------------------------+
+1 row in set (0.01 sec)
+
+
+

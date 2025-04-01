@@ -1,0 +1,104 @@
+mysql> delimiter //
+mysql> CREATE PROCEDURE IncreaseSalary()
+    -> BEGIN
+    ->     
+    ->     DECLARE done INT DEFAULT 0;
+    ->     DECLARE emp_id INT;
+    ->     DECLARE emp_salary DECIMAL(10,2);
+    -> 
+    ->     
+    ->     DECLARE emp_cursor CURSOR FOR
+    ->         SELECT id, salary
+    ->         FROM employees
+    ->         WHERE salary < 30000;
+    -> 
+    ->     
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+    -> 
+    ->     
+    ->     OPEN emp_cursor;
+    -> 
+    ->     
+    ->     read_loop: LOOP
+    ->         
+    ->         FETCH emp_cursor INTO emp_id, emp_salary;
+    -> 
+    ->        
+    ->         IF done THEN
+    ->             LEAVE read_loop;
+    ->         END IF;
+    -> 
+    ->        
+    ->         UPDATE employees
+    ->         SET salary = emp_salary * 1.10
+    ->         WHERE id = emp_id;
+    ->     END LOOP;
+    -> 
+    ->     
+    ->     CLOSE emp_cursor;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CALL IncreaseSalary();
+
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE CalculateBill1()
+    -> BEGIN
+    -> DECLARE done INT DEFAULT FALSE;
+    ->     DECLARE cust_id INT;
+    ->     DECLARE cust_name VARCHAR(255);
+    ->     DECLARE pre_reading_val INT;
+    ->     DECLARE cur_reading_val INT;
+    ->     DECLARE units_consumed INT;
+    ->     DECLARE bill_amount DECIMAL(10, 2);
+    ->     
+    ->     -- Declare the cursor for fetching customer details
+    ->     DECLARE cur CURSOR FOR 
+    ->         SELECT customer_id, name, pre_reading, cur_reading 
+    ->         FROM Bill;
+    ->     
+    ->     -- Declare the CONTINUE HANDLER for cursor end
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    ->     
+    ->     -- Open the cursor to start fetching records
+    ->     OPEN cur;
+    ->     
+    ->     -- Start looping over the cursor
+    ->     read_loop: LOOP
+    ->         FETCH cur INTO cust_id, cust_name, pre_reading_val, cur_reading_val;
+    ->         
+    ->         -- Check if cursor has reached the end
+    ->         IF done THEN
+    ->             LEAVE read_loop;
+    ->         END IF;
+    ->         
+    ->         -- Calculate the units consumed
+    ->         SET units_consumed = cur_reading_val - pre_reading_val;
+    ->         
+    ->         -- Calculate the bill amount based on units consumed
+    ->         IF units_consumed <= 100 THEN
+    ->             SET bill_amount = units_consumed * 2;
+    ->         ELSEIF units_consumed <= 200 THEN
+    ->             SET bill_amount = (100 * 2) + ((units_consumed - 100) * 2.5);
+    ->         ELSEIF units_consumed <= 300 THEN
+    ->             SET bill_amount = (100 * 2) + (100 * 2.5) + ((units_consumed - 200) * 3);
+    ->         ELSE
+    ->             SET bill_amount = (100 * 2) + (100 * 2.5) + (100 * 3) + ((units_consumed - 300) * 4);
+    ->         END IF;
+    ->         
+    ->         -- Update the Bill table with calculated units and amount
+    ->         UPDATE Bill
+    ->         SET unit = units_consumed, amount = bill_amount
+    ->         WHERE customer_id = cust_id;
+    ->     END LOOP;
+    ->     
+    ->     -- Close the cursor after processing all rows
+    ->     CLOSE cur;
+    ->     
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CALL CalculateBill1();
+
+

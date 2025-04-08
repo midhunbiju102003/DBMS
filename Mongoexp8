@@ -1,0 +1,176 @@
+test> use university
+switched to db university
+university> db.createCollection('student')
+{ ok: 1 }
+university> db.student.insertOne({ roll: 1, name: "Alice", dept: "MCA", sem: 2, cgpa: 8.1})
+{
+  acknowledged: true,
+  insertedId: ObjectId('67f4ec93e685d5abd76b140b')
+}
+university> db.student.insertOne({ roll: 2, name: "Bob", dept: "MBA", sem: 3, cgpa: 7.1})
+{
+  acknowledged: true,
+  insertedId: ObjectId('67f4ecb8e685d5abd76b140c')
+}
+university> db.student.insertOne({ roll: 3, name: "Charile", dept: "MCA", sem: 3, cgpa: 7.7})
+{
+  acknowledged: true,
+  insertedId: ObjectId('67f4ed02e685d5abd76b140d')
+}
+university> db.student.insertOne({ roll: 4, name: "David", dept: "MBA", sem: 1, cgpa: 6.1})
+{
+  acknowledged: true,
+  insertedId: ObjectId('67f4ed34e685d5abd76b140e')
+}
+university> db.student.insertOne({ roll: 5, name: "Evy", dept: "MCA", sem: 3, cgpa: 8.1})
+{
+  acknowledged: true,
+  insertedId: ObjectId('67f4ed51e685d5abd76b140f')
+}
+university> db.student.insertMany([{ roll: 6, name: "Franky", dept: "MBA", sem: 3, cgpa: 8.4},{ roll: 7, name: "Grace", dept: "MCA", sem: 4, cgpa: 8.1},{ roll: 8, name: "Hannah", dept: "MBA", sem: 2, cgpa: 7.3},{ roll: 9, name: "Ivy", dept: "MCA", sem: 2, cgpa: 8.3},{ roll: 10, name: "Jack", dept: "MBA", sem: 2, cgpa: 8.1}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId('67f4ee4de685d5abd76b1410'),
+    '1': ObjectId('67f4ee4de685d5abd76b1411'),
+    '2': ObjectId('67f4ee4de685d5abd76b1412'),
+    '3': ObjectId('67f4ee4de685d5abd76b1413'),
+    '4': ObjectId('67f4ee4de685d5abd76b1414')
+  }
+}
+university> db.student.find({dept: "MCA"})
+[
+  {
+    _id: ObjectId('67f4ec93e685d5abd76b140b'),
+    roll: 1,
+    name: 'Alice',
+    dept: 'MCA',
+    sem: 2,
+    cgpa: 8.1
+  },
+  {
+    _id: ObjectId('67f4ed02e685d5abd76b140d'),
+    roll: 3,
+    name: 'Charile',
+    dept: 'MCA',
+    sem: 3,
+    cgpa: 7.7
+  },
+  {
+    _id: ObjectId('67f4ed51e685d5abd76b140f'),
+    roll: 5,
+    name: 'Evy',
+    dept: 'MCA',
+    sem: 3,
+    cgpa: 8.1
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1411'),
+    roll: 7,
+    name: 'Grace',
+    dept: 'MCA',
+    sem: 4,
+    cgpa: 8.1
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1413'),
+    roll: 9,
+    name: 'Ivy',
+    dept: 'MCA',
+    sem: 2,
+    cgpa: 8.3
+  }
+]
+university> db.student.updateMany({dept:"MCA"},{$set:{sem: 1}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 5,
+  modifiedCount: 5,
+  upsertedCount: 0
+}
+university> db.student.find()
+[
+  {
+    _id: ObjectId('67f4ec93e685d5abd76b140b'),
+    roll: 1,
+    name: 'Alice',
+    dept: 'MCA',
+    sem: 1,
+    cgpa: 8.1
+  },
+  {
+    _id: ObjectId('67f4ecb8e685d5abd76b140c'),
+    roll: 2,
+    name: 'Bob',
+    dept: 'MBA',
+    sem: 3,
+    cgpa: 7.1
+  },
+  {
+    _id: ObjectId('67f4ed02e685d5abd76b140d'),
+    roll: 3,
+    name: 'Charile',
+    dept: 'MCA',
+    sem: 1,
+    cgpa: 7.7
+  },
+  {
+    _id: ObjectId('67f4ed34e685d5abd76b140e'),
+    roll: 4,
+    name: 'David',
+    dept: 'MBA',
+    sem: 1,
+    cgpa: 6.1
+  },
+  {
+    _id: ObjectId('67f4ed51e685d5abd76b140f'),
+    roll: 5,
+    name: 'Evy',
+    dept: 'MCA',
+    sem: 1,
+    cgpa: 8.1
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1410'),
+    roll: 6,
+    name: 'Franky',
+    dept: 'MBA',
+    sem: 3,
+    cgpa: 8.4
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1411'),
+    roll: 7,
+    name: 'Grace',
+    dept: 'MCA',
+    sem: 1,
+    cgpa: 8.1
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1412'),
+    roll: 8,
+    name: 'Hannah',
+    dept: 'MBA',
+    sem: 2,
+    cgpa: 7.3
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1413'),
+    roll: 9,
+    name: 'Ivy',
+    dept: 'MCA',
+    sem: 1,
+    cgpa: 8.3
+  },
+  {
+    _id: ObjectId('67f4ee4de685d5abd76b1414'),
+    roll: 10,
+    name: 'Jack',
+    dept: 'MBA',
+    sem: 2,
+    cgpa: 8.1
+  }
+]
+
+

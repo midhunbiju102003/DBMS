@@ -1,0 +1,302 @@
+mlm@mlm-H81:~$ ls
+ anandhu           fact.c                               palindrome.sh
+ a.out             factorial.c                          pop.java
+ areacircle.sh     java                                 poppy
+ arithmetic.java  'Lab Cycle - 3 Experiment 7.pdf'      post.c
+ armstrong.sh      leapyear.sh                          pranav.c
+ arraysearch.c     link.c                               rev.sh
+ circum.sh         linkedlist.c                         run
+ dbms              linx.sh                              singlylink.c
+ dslab.pdf         mongodb-mongosh_2.4.2_amd64.deb      snap
+ etc               mongodb-org-server_8.0.6_amd64.deb   usr
+ evenoddsum.sh    'New Folder'                          var
+ EXP_05           'NSA LAB FULL-1.pdf'                  Wallpapers
+ exp_05.txt       'NSA LAB FULL.pdf'
+ EXP7              odd_even.sh
+mlm@mlm-H81:~$ sudo dpkg -i mongodb-org-server_8.0.6_amd64.deb
+[sudo] password for mlm: 
+(Reading database ... 186615 files and directories currently installed.)
+Preparing to unpack mongodb-org-server_8.0.6_amd64.deb ...
+Unpacking mongodb-org-server (8.0.6) over (8.0.6) ...
+Setting up mongodb-org-server (8.0.6) ...
+Adding system user `mongodb' (UID 129) ...
+Adding new user `mongodb' (UID 129) with group `nogroup' ...
+Not creating home directory `/home/mongodb'.
+Adding group `mongodb' (GID 137) ...
+Done.
+Adding user `mongodb' to group `mongodb' ...
+Adding user mongodb to group mongodb
+Done.
+Processing triggers for man-db (2.10.2-1) ...
+mlm@mlm-H81:~$ sudo systemctl status mongo.service
+Unit mongo.service could not be found.
+mlm@mlm-H81:~$ sudo systemctl status mongod.service
+○ mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor prese>
+     Active: inactive (dead)
+       Docs: https://docs.mongodb.org/manual
+
+mlm@mlm-H81:~$ sudo systemctl start mongod.service
+mlm@mlm-H81:~$ sudo systemctl status mongod.service
+● mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor prese>
+     Active: active (running) since Tue 2025-04-08 14:20:19 IST; 18s ago
+       Docs: https://docs.mongodb.org/manual
+   Main PID: 8182 (mongod)
+     Memory: 90.7M
+        CPU: 868ms
+     CGroup: /system.slice/mongod.service
+             └─8182 /usr/bin/mongod --config /etc/mongod.conf
+
+Apr 08 14:20:19 mlm-H81 systemd[1]: Started MongoDB Database Server.
+Apr 08 14:20:19 mlm-H81 mongod[8182]: {"t":{"$date":"2025-04-08T08:50:19.393Z"}>
+lines 1-12/12 (END)
+
+
+
+
+
+mlm@mlm-H81:~$ ls
+ anandhu           fact.c                               palindrome.sh
+ a.out             factorial.c                          pop.java
+ areacircle.sh     java                                 poppy
+ arithmetic.java  'Lab Cycle - 3 Experiment 7.pdf'      post.c
+ armstrong.sh      leapyear.sh                          pranav.c
+ arraysearch.c     link.c                               rev.sh
+ circum.sh         linkedlist.c                         run
+ dbms              linx.sh                              singlylink.c
+ dslab.pdf         mongodb-mongosh_2.4.2_amd64.deb      snap
+ etc               mongodb-org-server_8.0.6_amd64.deb   usr
+ evenoddsum.sh    'New Folder'                          var
+ EXP_05           'NSA LAB FULL-1.pdf'                  Wallpapers
+ exp_05.txt       'NSA LAB FULL.pdf'
+ EXP7              odd_even.sh
+mlm@mlm-H81:~$ sudo dpkg -i mongodb-mongosh_2.4.2_amd64.deb
+[sudo] password for mlm: 
+Selecting previously unselected package mongodb-mongosh.
+(Reading database ... 186615 files and directories currently installed.)
+Preparing to unpack mongodb-mongosh_2.4.2_amd64.deb ...
+Unpacking mongodb-mongosh (2.4.2) ...
+Setting up mongodb-mongosh (2.4.2) ...
+Processing triggers for man-db (2.10.2-1) ...
+mlm@mlm-H81:~$ mongosh
+Current Mongosh Log ID:	67f4e50e7b22c031946b140a
+Connecting to:		mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.4.2
+Using MongoDB:		8.0.6
+Using Mongosh:		2.4.2
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+
+To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the disableTelemetry() command.
+
+------
+   The server generated these startup warnings when booting
+   2025-04-08T14:20:19.485+05:30: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2025-04-08T14:20:20.216+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+   2025-04-08T14:20:20.216+05:30: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2025-04-08T14:20:20.216+05:30: For customers running the current memory allocator, we suggest changing the contents of the following sysfsFile
+   2025-04-08T14:20:20.216+05:30: We suggest setting the contents of sysfsFile to 0.
+   2025-04-08T14:20:20.216+05:30: vm.max_map_count is too low
+   2025-04-08T14:20:20.216+05:30: We suggest setting swappiness to 0 or 1, as swapping can cause performance problems.
+------
+
+test> show dbs;
+admin   40.00 KiB
+config  12.00 KiB
+local   40.00 KiB
+test> use mydb;
+switched to db mydb
+mydb> show dbs;
+admin   40.00 KiB
+config  12.00 KiB
+local   40.00 KiB
+mydb> db.employees.insertOne({name: "John", age:30}) 
+{
+  acknowledged: true,
+  insertedId: ObjectId('67f4e5c87b22c031946b140b')
+}
+mydb> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+● mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled;>
+     Active: active (running) since Tue 2025-04-08 14:20:19 IST; 1>
+       Docs: https://docs.mongodb.org/manual
+   Main PID: 8182 (mongod)
+     Memory: 90.7M
+        CPU: 868ms
+     CGroup: /system.slice/mongod.service
+             └─8182 /usr/bin/mongod --config /etc/mongod.conf
+
+Apr 08 14:20:19 mlm-H81 systemd[1]: Started MongoDB Database Serve>
+Apr 08 14:20:19 mlm-H81 mongod[8182]: {"t":{"$date":"2025-04-08T08>
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+lines 1-12/12 (END)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+● mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled;>
+     Active: active (running) since Tue 2025-04-08 14:20:19 IST; 1>
+       Docs: https://docs.mongodb.org/manual
+   Main PID: 8182 (mongod)
+     Memory: 90.7M
+        CPU: 868ms
+     CGroup: /system.slice/mongod.service
+             └─8182 /usr/bin/mongod --config /etc/mongod.conf
+
+Apr 08 14:20:19 mlm-H81 systemd[1]: Started MongoDB Database Serve>
+Apr 08 14:20:19 mlm-H81 mongod[8182]: {"t":{"$date":"2025-04-08T08>
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+lines 1-12/12 (END)...skipping...
+● mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled; vendor preset: enabled)
+     Active: active (running) since Tue 2025-04-08 14:20:19 IST; 18s ago
+       Docs: https://docs.mongodb.org/manual
+   Main PID: 8182 (mongod)
+     Memory: 90.7M
+        CPU: 868ms
+     CGroup: /system.slice/mongod.service
+             └─8182 /usr/bin/mongod --config /etc/mongod.conf
+
+Apr 08 14:20:19 mlm-H81 systemd[1]: Started MongoDB Database Server.
+Apr 08 14:20:19 mlm-H81 mongod[8182]: {"t":{"$date":"2025-04-08T08:50:19.393Z"},"s":"I",  "c":"CONTROL",  "id":7484500, "ctx":"main","msg":"E>
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+lines 1-12/12 (END)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+● mongod.service - MongoDB Database Server
+     Loaded: loaded (/lib/systemd/system/mongod.service; disabled;>
+     Active: active (running) since Tue 2025-04-08 14:20:19 IST; 1>
+       Docs: https://docs.mongodb.org/manual
+   Main PID: 8182 (mongod)
+     Memory: 90.7M
+        CPU: 868ms
+     CGroup: /system.slice/mongod.service
+             └─8182 /usr/bin/mongod --config /etc/mongod.conf
+
+Apr 08 14:20:19 mlm-H81 systemd[1]: Started MongoDB Database Serve>
+Apr 08 14:20:19 mlm-H81 mongod[8182]: {"t":{"$date":"2025-04-08T08>
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+~
+lines 1-12/12 (END)
+
+

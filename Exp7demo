@@ -1,0 +1,164 @@
+pg1.
+
+DELIMITER //
+CREATE PROCEDURE IncreaseSalary()
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE emp_id INT;
+  DECLARE emp_salary DECIMAL(10,2);
+  DECLARE cur CURSOR FOR SELECT employee_id, salary FROM employee WHERE salary < 30000;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN cur;
+  read_loop: LOOP
+    FETCH cur INTO emp_id, emp_salary;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+    UPDATE employee SET salary = salary * 1.10 WHERE employee_id = emp_id;
+  END LOOP;
+  CLOSE cur;
+END //
+DELIMITER ;
+
+
+pg2.
+
+DELIMITER //
+CREATE PROCEDURE CalculateBill()
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE cust_id INT;
+  DECLARE cust_name VARCHAR(255);
+  DECLARE pre_reading_val INT;
+  DECLARE cur_reading_val INT;
+  DECLARE units_consumed INT;
+  DECLARE bill_amount DECIMAL(10, 2);
+  DECLARE cur CURSOR FOR SELECT customer_id, name, pre_reading, cur_reading FROM Bill;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN cur;
+  read_loop: LOOP
+    FETCH cur INTO cust_id, cust_name, pre_reading_val, cur_reading_val;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+
+    SET units_consumed = cur_reading_val - pre_reading_val;
+
+    IF units_consumed <= 100 THEN 
+      SET bill_amount = units_consumed * 2;
+    ELSEIF units_consumed <= 200 THEN 
+      SET bill_amount = (100 * 2) + (units_consumed - 100) * 2.5;
+    ELSEIF units_consumed <= 300 THEN 
+      SET bill_amount = (100 * 2) + (100 * 2.5) + (units_consumed - 200) * 3;
+    ELSE
+      SET bill_amount = (100 * 2) + (100 * 2.5) + (100 * 3) + (units_consumed - 300) * 4;
+    END IF;
+
+    UPDATE Bill 
+    SET unit = units_consumed, amount = bill_amount 
+    WHERE customer_id = cust_id;
+  END LOOP;
+  CLOSE cur;
+END //
+DELIMITER ;
+
+CALL CalculateBill();
+SELECT * FROM Bill;
+
+pg3.
+
+CREATE TABLE emp_history (
+  employee_id INT,
+  employee_name VARCHAR(50),
+  employee_department VARCHAR(50),
+  date_of_deletion DATE
+);
+
+CREATE TABLE employee (
+  employee_id INT,
+  employee_name VARCHAR(50),
+  employee_department VARCHAR(50)
+);
+
+INSERT INTO employee VALUES (1, 'AAA', 'sales'), (2, 'BBB', 'marketing'), (3, 'CCC', 'finance');
+
+DELIMITER //
+CREATE TRIGGER trg_employee_delete 
+AFTER DELETE ON employee 
+FOR EACH ROW 
+BEGIN 
+  INSERT INTO emp_history (employee_id, employee_name, employee_department, date_of_deletion)
+  VALUES (OLD.employee_id, OLD.employee_name, OLD.employee_department, CURDATE());
+END //
+DELIMITER ;
+
+DELETE FROM employee WHERE employee_id = 1;
+SELECT * FROM emp_history;
+
+pg4.
+
+CREATE TABLE emp_details (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50),
+  job_id VARCHAR(50)
+);
+
+DELIMITER $$
+CREATE TRIGGER before_insert_emp_details 
+BEFORE INSERT ON emp_details 
+FOR EACH ROW 
+BEGIN 
+  SET NEW.name = TRIM(NEW.name); 
+  SET NEW.job_id = UPPER(NEW.job_id); 
+END $$
+DELIMITER ;
+
+INSERT INTO emp_details (name, job_id) VALUES (' Tony ', 'mk001');
+SELECT * FROM emp_details;
+
+pg5.
+
+CREATE TABLE students (
+  student_id INT,
+  name VARCHAR(50),
+  sub1 INT,
+  sub2 INT,
+  sub3 INT,
+  total INT,
+  per_marks DECIMAL(5,2),
+  grade VARCHAR(20)
+);
+
+DELIMITER //
+CREATE TRIGGER calculate_marks 
+BEFORE UPDATE ON students 
+FOR EACH ROW 
+BEGIN 
+  SET NEW.total = NEW.sub1 + NEW.sub2 + NEW.sub3; 
+  SET NEW.per_marks = NEW.total / 3; 
+  IF NEW.per_marks >= 90 THEN 
+    SET NEW.grade = 'EXCELLENT'; 
+  ELSEIF NEW.per_marks >= 75 THEN 
+    SET NEW.grade = 'VERY GOOD'; 
+  ELSEIF NEW.per_marks >= 60 THEN 
+    SET NEW.grade = 'GOOD'; 
+  ELSEIF NEW.per_marks >= 40 THEN 
+    SET NEW.grade = 'AVERAGE'; 
+  ELSE 
+    SET NEW.grade = 'NOT PROMOTED'; 
+  END IF; 
+END //
+DELIMITER ;
+
+INSERT INTO students (student_id, name, sub1, sub2, sub3) 
+VALUES (1, 'Alice', 85, 90, 80), (2, 'Bob', 70, 75, 65);
+
+SELECT * FROM students;
+
+UPDATE students SET sub3 = 95 WHERE student_id = 1;
+SELECT * FROM students;
+
+pg6.
+

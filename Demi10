@@ -1,0 +1,12 @@
+db.class.insertMany([
+  { rollno: 1, name: "Alice", age: 21, gender: "Female", div: "A", sub: ["Math", "Science"], credit: 5 },
+  { rollno: 2, name: "Bob", age: 22, gender: "Male", div: "B", sub: ["English", "Math"], credit: 4 },
+  { rollno: 3, name: "Charlie", age: 20, gender: "Male", div: "A", sub: ["Science", "Math"], credit: 6 },
+  { rollno: 4, name: "David", age: 19, gender: "Male", div: "B", sub: ["English", "History"], credit: 3 },
+  { rollno: 5, name: "Eve", age: 23, gender: "Female", div: "C", sub: ["Math", "Science"], credit: 7 },
+  { rollno: 6, name: "Frank", age: 21, gender: "Male", div: "C", sub: ["History", "Math"], credit: 4 },
+  { rollno: 7, name: "Grace", age: 18, gender: "Female", div: "B", sub: ["Science", "Math"], credit: 5 },
+  { rollno: 8, name: "Helen", age: 22, gender: "Female", div: "A", sub: ["English", "Math"], credit: 6 },
+  { rollno: 9, name: "Ivy", age: 20, gender: "Female", div: "C", sub: ["Science", "History"], credit: 5 },
+  { rollno: 10, name: "Tom", age: 24, gender: "Male", div: "B", sub: ["Math", "Science"], credit: 8 }
+])

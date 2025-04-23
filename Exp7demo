@@ -160,5 +160,75 @@ SELECT * FROM students;
 UPDATE students SET sub3 = 95 WHERE student_id = 1;
 SELECT * FROM students;
 
-pg6.
+tables 
+CREATE TABLE employee (
+    employee_id INT PRIMARY KEY,
+    employee_name VARCHAR(100),
+    salary DECIMAL(10, 2)
+);
 
+INSERT INTO employee (employee_id, employee_name, salary) VALUES
+(1, 'John', 25000),
+(2, 'Jane', 32000),
+(3, 'Mark', 28000);
+
+table2.
+
+
+CREATE TABLE Bill (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(200),
+    pre_reading INT,
+    cur_reading INT,
+    unit INT DEFAULT 0,
+    amount DECIMAL(10, 2) DEFAULT 0
+);
+
+INSERT INTO Bill (customer_id, name, pre_reading, cur_reading) VALUES
+(1, 'Alex', 1000, 1150),
+(2, 'Brian', 500, 820),
+(3, 'Cara', 200, 550);
+
+tables 3.
+
+CREATE TABLE emp_history (
+    employee_id INT,
+    employee_name VARCHAR(50),
+    employee_department VARCHAR(50),
+    date_of_deletion DATE
+);
+
+CREATE TABLE employee (
+    employee_id INT,
+    employee_name VARCHAR(50),
+    employee_department VARCHAR(50)
+);
+
+INSERT INTO employee (employee_id, employee_name, employee_department) VALUES
+(1, 'AAA', 'sales'),
+(2, 'BBB', 'marketing'),
+(3, 'CCC', 'finance');
+
+tables 4.
+
+CREATE TABLE emp_details (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50),
+    job_id VARCHAR(50)
+);
+
+tables5.
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    sub1 INT,
+    sub2 INT,
+    sub3 INT,
+    total INT DEFAULT 0,
+    per_marks DECIMAL(5,2) DEFAULT 0,
+    grade VARCHAR(20)
+);
+
+INSERT INTO students (student_id, name, sub1, sub2, sub3) VALUES
+(1, 'Alice', 85, 90, 80),
+(2, 'Bob', 70, 75, 65);

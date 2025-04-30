@@ -1,0 +1,64 @@
+CREATE TABLE Bill (
+    customer_id INT PRIMARY KEY,
+    name VARCHAR(200),
+    pre_reading INT,
+    cur_reading INT,
+    unit INT DEFAULT 0,
+    amount DECIMAL(10,2) DEFAULT 0
+);
+INSERT INTO Bill (customer_id, name, pre_reading, cur_reading) VALUES
+(1, 'Alice', 0, 90),
+(2, 'Bob', 100, 210),
+(3, 'Charlie', 50, 370),
+(4, 'David', 200, 310),
+(5, 'Eva', 400, 780);
+DELIMITER //
+
+CREATE PROCEDURE CalculateBill()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cust_id INT;
+    DECLARE cust_name VARCHAR(255);
+    DECLARE pre_reading_val INT;
+    DECLARE cur_reading_val INT;
+    DECLARE units_consumed INT;
+    DECLARE bill_amount DECIMAL(10,2);
+
+    DECLARE cur CURSOR FOR 
+        SELECT customer_id, name, pre_reading, cur_reading FROM Bill;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO cust_id, cust_name, pre_reading_val, cur_reading_val;
+        IF done THEN 
+            LEAVE read_loop;
+        END IF;
+
+        SET units_consumed = cur_reading_val - pre_reading_val;
+
+        IF units_consumed <= 100 THEN
+            SET bill_amount = units_consumed * 2;
+        ELSEIF units_consumed <= 200 THEN
+            SET bill_amount = (100 * 2) + ((units_consumed - 100) * 2.5);
+        ELSEIF units_consumed <= 300 THEN
+            SET bill_amount = (100 * 2) + (100 * 2.5) + ((units_consumed - 200) * 3);
+        ELSE
+            SET bill_amount = (100 * 2) + (100 * 2.5) + (100 * 3) + ((units_consumed - 300) * 4);
+        END IF;
+
+        UPDATE Bill
+        SET unit = units_consumed,
+            amount = bill_amount
+        WHERE customer_id = cust_id;
+
+    END LOOP;
+
+    CLOSE cur;
+END //
+
+DELIMITER ;
+CALL CalculateBill();
+SELECT * FROM Bill;

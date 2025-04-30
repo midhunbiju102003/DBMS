@@ -1,0 +1,82 @@
+mysql> CREATE TABLE Bill (customer_id INT PRIMARY KEY,name VARCHAR(200),pre_reading INT,cur_reading INT,unit INT DEFAULT 0,amount DECIMAL(10,2) DEFAULT 0);
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> INSERT INTO Bill (customer_id, name, pre_reading, cur_reading) VALUES(1, 'Alice', 0, 90),(2, 'Bob', 100, 210),(3,'Charlie', 50, 370),(4, 'David', 200, 310),(5, 'Eva', 400, 780);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Bill;
++-------------+---------+-------------+-------------+------+--------+
+| customer_id | name    | pre_reading | cur_reading | unit | amount |
++-------------+---------+-------------+-------------+------+--------+
+|           1 | Alice   |           0 |          90 |    0 |   0.00 |
+|           2 | Bob     |         100 |         210 |    0 |   0.00 |
+|           3 | Charlie |          50 |         370 |    0 |   0.00 |
+|           4 | David   |         200 |         310 |    0 |   0.00 |
+|           5 | Eva     |         400 |         780 |    0 |   0.00 |
++-------------+---------+-------------+-------------+------+--------+
+5 rows in set (0.00 sec)
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE CalculateBill()
+    -> BEGIN
+    ->     DECLARE done INT DEFAULT FALSE;
+    ->     DECLARE cust_id INT;
+    ->     DECLARE cust_name VARCHAR(255);
+    ->     DECLARE pre_reading_val INT;
+    ->     DECLARE cur_reading_val INT;
+    ->     DECLARE units_consumed INT;
+    ->     DECLARE bill_amount DECIMAL(10,2);
+    -> 
+    ->     DECLARE cur CURSOR FOR 
+    ->         SELECT customer_id, name, pre_reading, cur_reading FROM Bill;
+    -> 
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    -> 
+    ->     OPEN cur;
+    -> 
+    ->     read_loop: LOOP
+    ->         FETCH cur INTO cust_id, cust_name, pre_reading_val, cur_reading_val;
+    ->         IF done THEN 
+    ->             LEAVE read_loop;
+    ->         END IF;
+    -> 
+    ->         SET units_consumed = cur_reading_val - pre_reading_val;
+    -> 
+    ->         IF units_consumed <= 100 THEN
+    ->             SET bill_amount = units_consumed * 2;
+    ->         ELSEIF units_consumed <= 200 THEN
+    ->             SET bill_amount = (100 * 2) + ((units_consumed - 100) * 2.5);
+    ->         ELSEIF units_consumed <= 300 THEN
+    ->             SET bill_amount = (100 * 2) + (100 * 2.5) + ((units_consumed - 200) * 3);
+    ->         ELSE
+    ->             SET bill_amount = (100 * 2) + (100 * 2.5) + (100 * 3) + ((units_consumed - 300) * 4);
+    ->         END IF;
+    -> 
+    ->         UPDATE Bill
+    ->         SET unit = units_consumed,
+    ->             amount = bill_amount
+    ->         WHERE customer_id = cust_id;
+    -> 
+    ->     END LOOP;
+    -> 
+    ->     CLOSE cur;
+    -> END //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> CALL CalculateBill();
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> SELECT * FROM Bill;
++-------------+---------+-------------+-------------+------+---------+
+| customer_id | name    | pre_reading | cur_reading | unit | amount  |
++-------------+---------+-------------+-------------+------+---------+
+|           1 | Alice   |           0 |          90 |   90 |  180.00 |
+|           2 | Bob     |         100 |         210 |  110 |  225.00 |
+|           3 | Charlie |          50 |         370 |  320 |  830.00 |
+|           4 | David   |         200 |         310 |  110 |  225.00 |
+|           5 | Eva     |         400 |         780 |  380 | 1070.00 |
++-------------+---------+-------------+-------------+------+---------+
+5 rows in set (0.00 sec)
+

@@ -1,0 +1,69 @@
+mysql> CREATE TABLE employees(id INT PRIMARY KEY AUTO_INCREMENT,name VARCHAR(100),salary DECIMAL(10,2));
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> INSERT INTO employees (name, salary) VALUES 
+    -> ('Alice', 25000),
+    -> ('Bob', 32000),
+    -> ('Charlie', 28000),
+    -> ('David', 35000),
+    -> ('Eva', 27000);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM employees;
++----+---------+----------+
+| id | name    | salary   |
++----+---------+----------+
+|  1 | Alice   | 25000.00 |
+|  2 | Bob     | 32000.00 |
+|  3 | Charlie | 28000.00 |
+|  4 | David   | 35000.00 |
+|  5 | Eva     | 27000.00 |
++----+---------+----------+
+5 rows in set (0.00 sec)
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE IncreaseSalaryCursor()
+    -> BEGIN
+    ->     DECLARE done INT DEFAULT FALSE;
+    ->     DECLARE emp_id INT;
+    ->     DECLARE emp_salary DECIMAL(10,2);
+    -> 
+    ->     DECLARE cur CURSOR FOR
+    ->         SELECT id, salary FROM employees WHERE salary < 30000;
+    -> 
+    ->     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    -> 
+    ->     OPEN cur;
+    -> 
+    ->     read_loop: LOOP
+    ->         FETCH cur INTO emp_id, emp_salary;
+    ->         IF done THEN
+    ->             LEAVE read_loop;
+    ->         END IF;
+    -> 
+    ->         UPDATE employees
+    ->         SET salary = emp_salary * 1.10
+    ->         WHERE id = emp_id;
+    ->     END LOOP;
+    -> 
+    ->     CLOSE cur;
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+mysql> CALL IncreaseSalaryCursor();
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> SELECT * FROM employees;
++----+---------+----------+
+| id | name    | salary   |
++----+---------+----------+
+|  1 | Alice   | 27500.00 |
+|  2 | Bob     | 32000.00 |
+|  3 | Charlie | 30800.00 |
+|  4 | David   | 35000.00 |
+|  5 | Eva     | 29700.00 |
++----+---------+----------+
+5 rows in set (0.01 sec)
+

@@ -9,3 +9,34 @@ INSERT INTO employees (name, salary) VALUES
 ('Charlie', 28000),
 ('David', 35000),
 ('Eva', 27000);
+
+DELIMITER //
+
+CREATE PROCEDURE IncreaseSalaryCursor()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE emp_id INT;
+    DECLARE emp_salary DECIMAL(10,2);
+
+    DECLARE cur CURSOR FOR
+        SELECT id, salary FROM employees WHERE salary < 30000;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO emp_id, emp_salary;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        UPDATE employees
+        SET salary = emp_salary * 1.10
+        WHERE id = emp_id;
+    END LOOP;
+
+    CLOSE cur;
+END //
+
+DELIMITER ;

@@ -1,46 +1,11 @@
-04.23 9:17 AM
-DELIMITER $$
-
-CREATE PROCEDURE SumOfDigitsProc(IN num INT)
-BEGIN
-    DECLARE sum INT DEFAULT 0;
-    DECLARE digit INT;
-
-    WHILE num > 0 DO
-        SET digit = num MOD 10;
-        SET sum = sum + digit;
-        SET num = FLOOR(num / 10);
-    END WHILE;
-
-    SELECT sum AS SumOfDigits;
-END$$
-
-DELIMITER ;
-CALL SumOfDigitsProc(12345);  -- Output: 15
-
-DELIMITER $$
-
-CREATE PROCEDURE GetSalaryProc(IN emp_id INT)
-BEGIN
-    SELECT salary
-    FROM employees
-    WHERE id = emp_id;
-END$$
-
-DELIMITER ;
-CALL GetSalaryProc(101);  -- Returns salary of employee with ID 101
-
 CREATE TABLE employees (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    position VARCHAR(100),
-    department VARCHAR(100),
-    salary DECIMAL(10,2),
-    hire_date DATE
+    name VARCHAR(100),
+    salary DECIMAL(10,2)
 );
-
-INSERT INTO employees (name, position, department, salary, hire_date)
-VALUES 
-('Alice Johnson', 'Manager', 'Sales', 75000.00, '2020-05-15'),
-('Bob Smith', 'Developer', 'IT', 60000.00, '2021-03-20'),
-('Carol Davis', 'Analyst', 'Finance', 58000.00, '2019-11-10');
+INSERT INTO employees (name, salary) VALUES 
+('Alice', 25000),
+('Bob', 32000),
+('Charlie', 28000),
+('David', 35000),
+('Eva', 27000);
